@@ -24,7 +24,7 @@ namespace RPC
 
         public Request(TcpClient c)
         {
-            lDNS = lNC = lAD = false;
+            lDNS = lNC = lAD = true;
             EP = new IPEndPoint(IPAddress.Loopback, 8336);
             buffer = new byte[1024 * 1024];
             bufferOut = new byte[1024 * 1024];
