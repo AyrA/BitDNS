@@ -50,6 +50,6 @@ You can buy a DNS name for cheap (some providers even accept bitcoin) everywhere
 If you know somebody who owns a domain, he probably even sets up the record for free for you because it does not causes any troubles with existing services.
 
 ## Image
-See the attached image for an example configuration.
+Screenshot of the address book
 
-![BM Config](https://bitmessage.org/forum/index.php?action=dlattach;topic=3281.0;attach=132;image)
+![BM Config](https://github.com/AyrA/BitDNS/blob/master/screen.png)
