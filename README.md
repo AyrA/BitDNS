@@ -52,4 +52,4 @@ If you know somebody who owns a domain, he probably even sets up the record for 
 ## Image
 Screenshot of the address book
 
-![BM Config](https://github.com/AyrA/BitDNS/blob/master/screen.png)
+![BM Config](https://raw.github.com/AyrA/BitDNS/master/screen.png)
