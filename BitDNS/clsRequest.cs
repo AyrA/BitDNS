@@ -10,6 +10,13 @@ namespace RPC
 {
     public class Request
     {
+        public bool lDNS
+        { get; set; }
+        public bool lNC
+        { get; set; }
+        public bool lAD
+        { get; set; }
+
         private TcpClient c;
         private IPEndPoint EP;
         private byte[] buffer;
@@ -17,6 +24,7 @@ namespace RPC
 
         public Request(TcpClient c)
         {
+            lDNS = lNC = lAD = false;
             EP = new IPEndPoint(IPAddress.Loopback, 8336);
             buffer = new byte[1024 * 1024];
             bufferOut = new byte[1024 * 1024];
@@ -46,13 +54,15 @@ namespace RPC
                 }
                 else if (s.Contains("name_show") && s.IndexOf(']')>s.IndexOf('['))
                 {
-                    //regex to check, if it is a DNS record
-                    Regex RE=new Regex(@"dns/[a-z0-9\.]*");
-                    Match m = RE.Match(s.ToLower());
-                    if (m.Captures.Count > 0)
+                    //regex to check, if it is a DNS or Ad record
+                    Regex REDNS = new Regex(@"dns/[a-z0-9\.]*");
+                    Regex READ = new Regex(@"ad/[a-z0-9\.]*");
+                    Match mDNS = REDNS.Match(s.ToLower());
+                    Match mAD = READ.Match(s.ToLower());
+                    if (mDNS.Captures.Count > 0 && lDNS)
                     {
                         //DNS
-                        BMA[] Addr = Program.getTXT(m.Captures[0].Value.Substring(m.Captures[0].Value.IndexOf('/') + 1));
+                        BMA[] Addr = Program.getTXT(mDNS.Captures[0].Value.Substring(mDNS.Captures[0].Value.IndexOf('/') + 1));
                         if (Addr != null && Addr.Length > 0)
                         {
                             send(c, "{\"result\":{\"name\":\"id/NAME\",\"value\":\"{\\\"name\\\":\\\"HUMAN NAME\\\",\\\"nick\\\":\\\"" + Addr[0].Label + "\\\",\\\"identity\\\":\\\"id/NAME\\\",\\\"bitmessage\\\":\\\"" + Addr[0].Address + "\\\"}\"},\"error\":null,\"id\":1}");
@@ -62,7 +72,20 @@ namespace RPC
                             send(c, "{\"result\":{\"name\":\"id/NAME\",\"value\":\"{\\\"name\\\":\\\"HUMAN NAME\\\",\\\"nick\\\":\\\"NICKNAME\\\",\\\"identity\\\":\\\"id/NAME\\\"}\"},\"error\":null,\"id\":1}");
                         }
                     }
-                    else
+                    else if (mAD.Captures.Count > 0 && lAD)
+                    {
+                        //AD
+                        string Addr = AddressBook.Get(mAD.Captures[0].Value.Substring(mAD.Captures[0].Value.IndexOf('/') + 1));
+                        if (Addr != null && Addr.Length > 0)
+                        {
+                            send(c, "{\"result\":{\"name\":\"id/NAME\",\"value\":\"{\\\"name\\\":\\\"HUMAN NAME\\\",\\\"nick\\\":\\\"null\\\",\\\"identity\\\":\\\"id/NAME\\\",\\\"bitmessage\\\":\\\"" + Addr + "\\\"}\"},\"error\":null,\"id\":1}");
+                        }
+                        else
+                        {
+                            send(c, "{\"result\":{\"name\":\"id/NAME\",\"value\":\"{\\\"name\\\":\\\"HUMAN NAME\\\",\\\"nick\\\":\\\"NICKNAME\\\",\\\"identity\\\":\\\"id/NAME\\\"}\"},\"error\":null,\"id\":1}");
+                        }
+                    }
+                    else if (lNC)
                     {
                         //NC
                         try
@@ -88,8 +111,12 @@ namespace RPC
                         }
                         catch
                         {
-                            send(c, "{\"result\":null,\"error\":\"Cannot connect to namecoind at "+EP.ToString()+"\",\"id\":1}");
+                            send(c, "{\"result\":null,\"error\":\"Cannot connect to namecoind at " + EP.ToString() + "\",\"id\":1}");
                         }
+                    }
+                    else
+                    {
+                        send(c, "{\"result\":null,\"error\":\"No results for your query\",\"id\":1}");
                     }
                 }
             }

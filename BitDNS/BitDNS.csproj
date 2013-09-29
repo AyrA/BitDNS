@@ -42,10 +42,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BMA.cs" />
+    <Compile Include="clsAddressBook.cs" />
     <Compile Include="clsDns.cs" />
     <Compile Include="clsRecordCollection.cs" />
     <Compile Include="clsRequest.cs" />
     <Compile Include="clsXmlRPC.cs" />
+    <Compile Include="frmAddressBook.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAddressBook.Designer.cs">
+      <DependentUpon>frmAddressBook.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmEntry.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmEntry.Designer.cs">
+      <DependentUpon>frmEntry.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -58,6 +71,13 @@
     <Content Include="image_icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="frmAddressBook.resx">
+      <DependentUpon>frmAddressBook.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmEntry.resx">
+      <DependentUpon>frmEntry.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

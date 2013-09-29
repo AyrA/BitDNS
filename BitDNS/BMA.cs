@@ -20,5 +20,22 @@ namespace BitDNS
             Label = L;
             Address = A;
         }
+
+        public override int GetHashCode()
+        {
+            return Label.GetHashCode() ^ Address.GetHashCode();
+        }
+        public override string ToString()
+        {
+            return string.Format("{0}\t{1}", string.IsNullOrEmpty(Label) ? "" : Label, Address);
+        }
+        public override bool Equals(object obj)
+        {
+            if (obj is BMA)
+            {
+                return ((BMA)obj).Label == Label && ((BMA)obj).Address == Address;
+            }
+            return base.Equals(obj);
+        }
     }
 }

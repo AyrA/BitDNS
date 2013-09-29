@@ -16,16 +16,22 @@ namespace BitDNS
 
         static void Main(string[] args)
         {
-            NotifyIcon NI = new NotifyIcon();
-            NI.Icon = Resources.image_icon;
-            NI.Visible = true;
-            NI.Text = "Double click to exit";
-            NI.DoubleClick += new EventHandler(NI_DoubleClick);
             waitForBM();
 
             XMLsrv x = new XMLsrv(8337);
-            NI.ShowBalloonTip(10000, "BitDNS launched", "BitDNS has been started and will close itself with bitmessage when done", ToolTipIcon.Info);
 
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            frmAddressBook FA = new frmAddressBook();
+            Thread t = new Thread(new ThreadStart(checkBM));
+            t.IsBackground = true;
+            t.Start();
+            Application.Run();
+            cont = false;
+        }
+
+        private static void checkBM()
+        {
             while (cont)
             {
                 Process[] PP = Process.GetProcessesByName("bitmessage");
@@ -35,7 +41,6 @@ namespace BitDNS
                 }
                 else
                 {
-                    Application.DoEvents();
                     Thread.Sleep(500);
                     foreach (Process P in PP)
                     {
@@ -43,7 +48,7 @@ namespace BitDNS
                     }
                 }
             }
-            NI.Visible = false;
+            Application.Exit();
         }
 
         private static void waitForBM()
